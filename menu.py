@@ -55,5 +55,4 @@ class Menu:
 
     def display_menu(self):
         for category in self.categories:
-            print(category)
-            print()
+            print(category, "\n")

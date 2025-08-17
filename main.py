@@ -58,4 +58,5 @@ def main():
         else:
             print("Invalid input!")
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
