@@ -1,4 +1,4 @@
-def page(activities, page=1, per_page=10):
+def page(activities:list, page : int = 1, per_page : int =10):
 
     total_pages = (len(activities) + per_page - 1) // per_page
 
