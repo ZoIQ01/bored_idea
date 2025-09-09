@@ -1,4 +1,4 @@
-def control(choice, current_page, total_pages):
+def control(choice : str, current_page : str, total_pages : str):
 
     choice = choice.strip().lower()
 
@@ -12,6 +12,6 @@ def control(choice, current_page, total_pages):
         return None
 
     else:
-        print("[WARN] Wrong input!")
+        print("Wrong input!")
 
         return current_page
