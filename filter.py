@@ -1,47 +1,61 @@
-def filter_activities_list(activities, field, value):
-    return [a for a in activities if str(a.get(field, "")) == str(value)]
+import pandas as pd
 
-def filter_activities(activities):
-    if not activities:
-        print("[WARN] No activities available!")
-        return []
-
-    print("Choose field to filter by:")
-    print("1. id")
-    print("2. activity")
-    print("3. type")
-    print("4. participants")
-    print("5. price")
-    print("6. accessibility")
-    print("7. link")
-
-    choice = input("Enter number: ").strip()
-    field_map = {
-        "1": "id",
-        "2": "activity",
-        "3": "type",
-        "4": "participants",
-        "5": "price",
-        "6": "accessibility",
-        "7": "link"
-    }
-    field = field_map.get(choice)
-    if not field:
-        print("Invalid choice!")
-        return activities
-
-    unique_values = sorted({str(a.get(field, "")) for a in activities})
-    print(f"Available values for '{field}':")
-    for i, val in enumerate(unique_values, 1):
-        print(f"{i}. {val}")
-
-    sel = input("Choose value number: ").strip()
+def panda_filter(activities: list) -> list:
+    df = pd.DataFrame(activities)
+    print("\nAvailable filters:")
+    print("1. Price")
+    print("2. Participants")
+    print("3. Type")
+    print("4. Accessibility")
+    print("5. Link")
+    print("0. No filter")
     try:
-        value = unique_values[int(sel)-1]
-    except:
-        print("Invalid selection!")
+        choice = int(input("Choose a filter: "))
+    except ValueError:
+        print("Invalid input.")
         return activities
 
-    filtered = filter_activities_list(activities, field, value)
-    print(f"[INFO] {len(filtered)} activities matched.")
-    return filtered
+    if choice == 1:
+        try:
+            min_price = float(input("Minimum price: "))
+            max_price = float(input("Maximum price: "))
+            filtered_df = df[(df['price'] >= min_price) & (df['price'] <= max_price)]
+        except ValueError:
+            print("Invalid input.")
+            return activities
+    elif choice == 2:
+        try:
+            min_participants = int(input("Minimum participants: "))
+            max_participants = int(input("Maximum participants: "))
+            filtered_df = df[(df['participants'] >= min_participants) & (df['participants'] <= max_participants)]
+        except ValueError:
+            print("Invalid input.")
+            return activities
+
+    elif choice == 3:
+        activity_type = input("Enter activity type: ").strip().lower()
+        filtered_df = df[df['type'].str.contains(activity_type, case=False, na=False)]
+    elif choice == 4:
+        try:
+            max_accessibility = float(input("Maximum accessibility: "))
+            filtered_df = df[df['accessibility'] <= max_accessibility]
+        except ValueError:
+            print("Invalid input.")
+            return activities
+
+    elif choice == 5:
+        link = input("Enter link: ").strip().lower()
+        filtered_df = df[df['link'].str.contains(link, case=False, na=False)]
+    elif choice == 0:
+        filtered_df = df
+    else:
+        print("Invalid choice.")
+        return activities
+
+    if filtered_df.empty:
+        print("No activities match the selected filter.")
+    else:
+        print("\nFiltered activities:")
+        print(filtered_df)
+
+    return filtered_df.to_dict(orient="records")
