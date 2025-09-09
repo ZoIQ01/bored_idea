@@ -2,7 +2,7 @@ import random
 
 def random_idea(df):
     if not df:
-        print("[WARN] No activities available!")
+        print("No activities available!")
         return
 
     idea = random.choice(df)
