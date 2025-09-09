@@ -1,19 +1,27 @@
-def check_activities(df):
-    if not df:
-        print("[WARN] No activities available!")
+from const import PAGE_SIZE
+import pandas as pd
+
+def check_activities(activities):
+    if not isinstance(activities, pd.DataFrame):
+        df = pd.DataFrame(activities)
+    else:
+        df = activities
+
+    if df.empty:
+        print("No activities available!")
         return
 
-    page_size = 10
-    total_pages = (len(df) + page_size - 1) // page_size
+    total_pages = (len(df) + PAGE_SIZE - 1) // PAGE_SIZE
     current_page = 0
 
     while True:
-        start = current_page * page_size
-        end = start + page_size
-        page_df = df[start:end]
+        start = current_page * PAGE_SIZE
+        end = start + PAGE_SIZE
+        page_df = df.iloc[start:end]
 
         print(f"\n--- Page {current_page + 1}/{total_pages} ---")
-        for idea in page_df:
+
+        for _, idea in page_df.iterrows():
             price = idea.get('price', 0)
             accessibility = idea.get('accessibility', 0)
 
