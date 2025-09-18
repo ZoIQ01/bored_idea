@@ -1,15 +1,12 @@
-import random
+import pandas as pd
 
 def random_idea(df):
-    if not df:
-        print("No activities available!")
-        return
-
-    idea = random.choice(df)
-    print("\n Random Idea")
+    if isinstance(df, list):
+        df = pd.DataFrame(df)
+    idea = df.sample(1).iloc[0].to_dict()
+    print("\nRandom Idea")
     print(f"id: {idea.get('id', '')} | activity: {idea.get('activity', '')} | type: {idea.get('type', '')} | "
           f"participants: {idea.get('participants', '')} | link: {idea.get('link', '')}")
-
     price = idea.get('price', 0)
     accessibility = idea.get('accessibility', 0)
     try:
@@ -22,3 +19,4 @@ def random_idea(df):
         accessibility = str(accessibility)
 
     print(f"price: {price} | accessibility: {accessibility}")
+

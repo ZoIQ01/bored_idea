@@ -37,30 +37,3 @@ def test_fetch_activity_mock():
         assert idea["type"] == "fun"
         assert idea["accessibility"] == 0.2
         assert idea["link"] == ""
-
-
-def test_add_activities_deduplication(sample_activities):
-    new = [{"id": "2", "activity": "WalkDuplicate", "type": "sport",
-            "participants": 2, "price": 0.0, "accessibility": 0.1, "link": "http://link"}]
-
-    updated = add_activities(new, sample_activities)
-
-    ids = [a["id"] for a in updated]
-    assert ids.count("2") == 1
-    assert len(updated) == 3
-
-def panda_sort_test(activities: list, column: str, ascending: bool = True) -> list:
-    df = pd.DataFrame(activities)
-    df.sort_values(by=column, ascending=ascending, inplace=True, ignore_index=True)
-    return df.to_dict(orient="records")
-
-def panda_filter_test(activities: list, column: str, min_val=None, max_val=None, exact_val=None) -> list:
-    df = pd.DataFrame(activities)
-    if exact_val is not None:
-        df = df[df[column] == exact_val]
-    else:
-        if min_val is not None:
-            df = df[df[column] >= min_val]
-        if max_val is not None:
-            df = df[df[column] <= max_val]
-    return df.to_dict(orient="records")

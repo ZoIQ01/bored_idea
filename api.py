@@ -8,6 +8,7 @@ TIMEOUT = 5
 
 def fetch_activity():
     try:
+
         r = requests.get(URL, timeout=TIMEOUT)
         r.raise_for_status()
         data = r.json()
