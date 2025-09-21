@@ -22,12 +22,13 @@ def load_or_fetch_initial(n: int = 100) -> pd.DataFrame:
     os.makedirs("data", exist_ok=True)
     activities = load_activities()
 
+    new_ideas = []
+
     if len(activities) < n:
         print("Checking local data..")
         print("Data not enough or missing. Fetching from API..")
 
         all_ids = set(activities["id"].astype(str))
-        new_ideas = []
         attempts = 0
 
         while len(new_ideas) + len(activities) < n:
@@ -38,6 +39,12 @@ def load_or_fetch_initial(n: int = 100) -> pd.DataFrame:
             if attempts > n * 5:
                 print("Can't get enough ideas!")
                 break
+
+        if new_ideas:
+            new_df = pd.DataFrame(new_ideas)
+            activities = pd.concat([activities, new_df], ignore_index=True)
+            add_activities(new_ideas, activities.to_dict(orient="records"))
+            print(f"{len(new_ideas)} ideas fetched and added.")
 
     print(f"Total activities loaded: {len(activities)}")
     return activities
@@ -79,16 +86,19 @@ def add_ideas_from_api(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    activities_list = load_or_fetch_initial(n=100)
+    all_activities = load_or_fetch_initial(n=100)
+    activities_list = all_activities.copy()
+
     while True:
         print_menu()
         choice = input("Choose an option: ")
         if choice == "1":
-            activities_list = add_ideas_from_api(activities_list)
+            activities_list = add_ideas_from_api(all_activities)
+            activities_list = all_activities.copy()
         elif choice == "2":
             check_activities(activities_list)
         elif choice == "3":
-            activities_list = filter_menu(activities_list)
+            activities_list = filter_menu(all_activities)
         elif choice == "4":
             activities_list = panda_sorted(activities_list)
         elif choice == "5":
@@ -98,6 +108,7 @@ def main():
             break
         else:
             print("Wrong input!")
+
 
 
 if __name__ == "__main__":

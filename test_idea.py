@@ -1,21 +1,40 @@
 import pytest
 from unittest.mock import patch
 import api
-import pandas as pd
 from filter import panda_filter
 from sort_idea_panda import  sort_activities
 
 @pytest.fixture
 def sample_activities():
-    return pd.DataFrame({
-        "id": [1, 2, 3],
-        "activity": ["watch movie", "read the book", "paint the wall"],
-        "type": ["fun", "learn", "draw"],
-        "participants": [1, 2, 3],
-        "price": [0, 0.5, 1],
-        "accessibility": ["nan", "nan", "nan"],
-        "link": ["https:", "https:", "https:"]
-    })
+    return [
+        {
+            "id": 1,
+            "activity": "watch movie",
+            "type": "fun",
+            "participants": 1,
+            "price": 0,
+            "accessibility": "nan",
+            "link": "https:"
+        },
+        {
+            "id": 2,
+            "activity": "read the book",
+            "type": "learn",
+            "participants": 2,
+            "price": 0.5,
+            "accessibility": "nan",
+            "link": "https:"
+        },
+        {
+            "id": 3,
+            "activity": "paint the wall",
+            "type": "draw",
+            "participants": 3,
+            "price": 1,
+            "accessibility": "nan",
+            "link": "https:"
+        }
+    ]
 
 def test_filter(sample_activities):
     result = panda_filter(sample_activities)
